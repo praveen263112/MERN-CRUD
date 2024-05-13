@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+
+  server:
+    build: ./server
+    image: mern-crud_server:latest
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./server:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/build
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/MERN
+
+  client:
+    build: ./client
+    image: mern-client:latest
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./client:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/build
+    depends_on:
+      - server
+    
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
